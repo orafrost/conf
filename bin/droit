@@ -1,0 +1,9 @@
+#!/bin/sh
+
+passw="jsYjzsDA"
+
+pass="`echo -n "$passw" | sha512sum | cut -f1 -d' '`"
+
+blih -u guillaume.verrier@epitech.eu -t $pass repository setacl $1 $2 $3
+
+

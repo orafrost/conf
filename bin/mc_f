@@ -1,0 +1,59 @@
+#!/bin/python3
+
+import time
+import os
+import sys
+
+def haider(file, name) :
+    file.write("##\n")
+    file.write("## Makefile for " + name + " in" + os.getcwd() + "\n")
+    file.write("##\n")
+    file.write("## Made by " + os.getenv("USER_NICKNAME") +"\n")
+    file.write("## Login   <" + os.getenv("USER") + "@epitech.net>\n")
+    file.write("##\n")
+    tmp = time.asctime(time.localtime(time.time()))
+    file.write("## Started on\t" + tmp + " " + os.getenv("USER_NICKNAME") + "\n")
+    file.write("## Last update\t" + tmp + " " + os.getenv("USER_NICKNAME")+ "\n")
+    file.write("##\n\n")
+
+def     getvar(lib, src):
+    for root, dirs, files in os.walk(".", topdown=False):
+        for name in files:
+            size = len(name)
+            if ('lib' not in os.path.join(root, name)) :
+                if (name[size - 2] == '.' and name[size - 1] == 'c') :
+                    src.append("\t" + os.path.join(root, name) + " \\\n")
+        for name in dirs:
+            if ('include'  in name or 'lib/' in os.path.join(root, name)) :
+                lib.append(name)
+
+
+def main(av):
+    lib = []
+    src = []
+    getvar(lib, src)
+    if (len(av) != 2):
+        print("Usage: ./my_mc \"name exec\"")
+        exit (1)
+    file = open("./Makefile", "w")
+    haider(file, av[1])
+    file.write("NAME =\t" + av[1] + "\n\n")
+    file.write("SRC =")
+    for name in src:
+        file.write(name)
+    file.write("\n")
+    file.write("OBJ =\t$(SRC:.c=.o)\n\n")
+    file.write("CFLAGS =-W\\\n\t-Wall\\\n\t-Werror\\\n")
+    for name in lib:
+        if ('include' in name):
+            file.write("\t-I" + os.path.join(".", name) + "\\\n")
+    file.write("\n")
+    file.write("all:\t $(NAME)\n\n")
+    file.write("$(NAME):$(OBJ)\n\tcc -o $(NAME) $(SRC) $(CFLAGS)\n\n")
+    file.write("clean:\n\trm -f $(OBJ)\n\n")
+    file.write("fclean:\tclean\n\trm -f $(NAME)\n\n")
+    file.write("re:\tfclean all")
+    file.close()
+
+if __name__ == "__main__" :
+    main(sys.argv)

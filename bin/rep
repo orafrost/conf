@@ -1,0 +1,14 @@
+#!/bin/sh
+passw="jsYjzsDA"
+
+pass="`echo -n "$passw" | sha512sum | cut -f1 -d' '`"
+
+
+blih -u guillaume.verrier@epitech.eu -t $pass repository create $1
+
+
+blih -u guillaume.verrier@epitech.eu -t $pass repository setacl $1 ramassage-tek r
+
+echo "ramassage-tek:r"
+
+

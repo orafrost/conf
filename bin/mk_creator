@@ -1,0 +1,139 @@
+#!/bin/python3
+
+import time
+import os
+import sys
+
+def haider(file, name) :
+    file.write("##\n")
+    file.write("## Makefile for " + name + " in" + os.getcwd() + "\n")
+    file.write("##\n")
+    file.write("## Made by " + os.getenv("USER_NICKNAME") +"\n")
+    file.write("## Login   <" + os.getenv("USER") + "@epitech.net>\n")
+    file.write("##\n")
+    tmp = time.asctime(time.localtime(time.time()))
+    file.write("## Started on\t" + tmp + " " + os.getenv("USER_NICKNAME") + "\n")
+    file.write("## Last update\t" + tmp + " " + os.getenv("USER_NICKNAME")+ "\n")
+    file.write("##\n\n")
+
+def     getvar(lib, src):
+    LIBOK = 0
+    for root, dirs, files in os.walk(".", topdown=False):
+        for name in files:
+            size = len(name)
+            if ('lib' not in os.path.join(root, name)) :
+                if (name[size - 2] == '.' and name[size - 1] == 'c') :
+                    src.append("\t" + os.path.join(root, name) + " \\\n")
+        for name in dirs:
+            if ('include'  in name or 'lib/' in os.path.join(root, name)) :
+                if ('lib/' in os.path.join(root, name)):
+                    LIBOK = 1
+                    if ('include' not in name):
+                        lib.append(name)
+                else :
+                    lib.append(os.path.join(root,name))
+    return (LIBOK)
+
+def compilationlib(tp, file, lib):
+    for name in lib:
+        if ('include' not in name):
+            file.write("\t" + tp + " -C " + "./lib/" + name + "\n")
+
+def handflag(file, lib, LIBOK, FLAG):
+        if (FLAG == 1 or LIBOK == 1 or len(lib) > 0):
+            file.write("CFLAGS =")
+            if (FLAG == 1):
+                file.write("-W\\\n\t-Wall\\\n\t-Werror\\\n")
+            if (LIBOK == 1):
+                if (FLAG == 1):
+                    file.write("\t")
+                file.write("-L./lib\\\n")
+                for a in lib:
+                    if ('/' not in a):
+                        file.write("\t-I./lib/"+ a +"\\\n")
+            i = FLAG + LIBOK
+            for name in lib:
+                if (i != 0):
+                    file.write("\t")
+                if ('include' in name):
+                    file.write("-I" + name + "\\\n")
+                else:
+                    file.write("-l" + name + "\\\n")
+                i += 1
+            file.write("\n")
+
+def source(file, src):
+    file.write("SRC =")
+    for name in src:
+        file.write(name)
+    file.write("\n")
+
+def comp(file, lib):
+    file.write("$(NAME):$(OBJ)\n")
+    compilationlib("make", file, lib)
+    file.write("\tcc -o $(NAME) $(OBJ) $(CFLAGS)\n\n")
+
+def clean(file, lib):
+    file.write("clean:\n")
+    compilationlib("make clean", file, lib)
+    file.write("\trm -f $(OBJ)\n\n")
+
+def fclean(file, lib):
+    file.write("fclean:\tclean\n")
+    compilationlib("make fclean", file, lib)
+    file.write("\trm -f $(NAME)\n\n")
+
+def findop(opt, ch):
+    for op in opt:
+        if (ch == op):
+            return (1)
+    return (0)
+
+def disphelp():
+    print("-h\tto display this help\n--flags\tto use -W -Wall -Werror in your makefile")
+    exit(0)
+
+def getopt(av, opt):
+    i = 2
+    while (i < len(av)):
+        if (av[i] != '-h' and av[i] != '--flags'):
+            print("Error : bad argument " + av[i])
+            print("Use -h for more information")
+            exit(1)
+        opt.append(av[i])
+        i += 1
+
+def   handarg(av, opt):
+    if (len(av) < 2 or len(av) > 4):
+        print("Usage: ./my_mc \"name exec\ [opt]")
+        exit (1)
+    getopt(av, opt)
+    if (findop(opt, "-h")):
+        disphelp()
+    if (len(av) > 2):
+        return (1)
+    return (0)
+
+def main(av):
+    lib = []
+    src = []
+    opt = []
+    FLAG = 0
+    FLAG = handarg(av, opt)
+    LIBOK = getvar(lib, src)
+    file = open("./Makefile", "w")
+    haider(file, av[1])
+    file.write("NAME =\t" + av[1] + "\n\n")
+    source(file, src)
+    file.write("OBJ =\t$(SRC:.c=.o)\n\n")
+    handflag(file, lib, LIBOK, FLAG)
+    file.write("all:\t$(NAME)\n\n")
+    comp(file, lib)
+    clean(file, lib)
+    fclean(file, lib)
+    file.write("re:\tfclean all")
+    file.close()
+    exit(0)
+
+if __name__ == "__main__" :
+    main(sys.argv)

@@ -1,0 +1,6 @@
+#!/bin/sh
+
+pass="jsYjzsDA"
+passW="`echo -n "$pass" | sha512sum | cut -f1 -d' '`"
+
+blih -u verrie_g -t $passW repository delete $1

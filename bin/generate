@@ -1,0 +1,18 @@
+#! /usr/bin/python3
+
+import os
+
+indirs = []
+directory = "."
+for root, dirs, files, in os.walk(directory):
+    if (root.find(".git") == -1):
+        indirs.append(root);
+
+for a in indirs:
+    b = a[len(directory) + 1:]
+    if (len(b) != 0):
+        b = b + "/"
+    print(b + "*.so")
+    print(b + "*.o")
+    print(b + "*~")
+    print(b + "*#")
