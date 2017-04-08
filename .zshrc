@@ -4,6 +4,10 @@ export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/heimdal/bin:/usr/heimdal/sbin:~/b
 export ZSH=/home/orafrost/.oh-my-zsh
 export USER_NICKNAME="guillame verrier"
 
+
+alias ne="emacs -nw"
+alias la="clear; ls -la"
+alias ls="ls --color"
 export LD_LIBRARY_PATH="/home/verrie_g/.froot/lib/"
 export C_INCLUDE_PATH="/home/verrie_g/.froot/include/"
 export CPLUS_INCLUDE_PATH="/home/verrie_g/.froot/include/"
@@ -11,7 +15,7 @@ export CPLUS_INCLUDE_PATH="/home/verrie_g/.froot/include/"
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-ZSH_THEME="agnoster"
+ZSH_THEME="robbyrussell"
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
